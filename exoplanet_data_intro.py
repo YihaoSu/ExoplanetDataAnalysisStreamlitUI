@@ -14,15 +14,15 @@ st.subheader('NASA系外行星資料庫')
 st.info('[NASA系外行星資料庫](https://exoplanetarchive.ipac.caltech.edu/)網站提供多個與系外行星相關的資料表，讓人查詢系外行星名稱、所繞行的恆星名稱、發現年份、發現方法、繞行恆星一圈的軌道週期、距離地球多遠、質量大小…等資訊。此[頁面](https://exoplanetarchive.ipac.caltech.edu/docs/TAP/usingTAP.html)能查閱各資料表欄位所代表的意義。')
 with st.expander('圖片解說'):
 	st.image(
-		'./img/NASAExoplanetArchive.png',
+		'https://media.heptabase.com/v1/images/e336080b-183d-4940-892f-a27e91a48b9b/d1a626a7-f228-41aa-9a87-767301f596b0/NASAExoplanetArchive.png',
 		caption='NASA系外行星資料庫網站首頁。點擊左上角的「Confirmed Planets」可以查看「Planetary Systems」資料表，而「Planetary Systems Composite Data」資料表可從右下角進入。'
 	)
 	st.image(
-		'./img/PlanetarySystemsTable.png',
+		'https://media.heptabase.com/v1/images/e336080b-183d-4940-892f-a27e91a48b9b/8da2f51f-ddae-4b0a-845f-b3d667fc9e3f/ConfirmedPlanetsTable.png',
 		caption='「Planetary Systems」資料表，不同研究團隊針對同一個行星所作的研究結果會在這張表分別列出。'
 	)
 	st.image(
-		'./img/PlanetarySystemsCompositeDataTable.png',
+		'https://media.heptabase.com/v1/images/e336080b-183d-4940-892f-a27e91a48b9b/51772e03-2a3e-48bb-9a40-0cc24a00bf21/PlanetarySystemsCompositeDataTable.png',
 	caption='「Planetary Systems Composite Data」資料表，能一行綜觀同個行星的所有欄位值。點擊左上方的「Download Table」可將資料表以CSV格式匯出。'
 	)
 
