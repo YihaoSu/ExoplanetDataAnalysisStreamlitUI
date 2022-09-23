@@ -2,6 +2,7 @@ import streamlit as st
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
 
 
+@st.experimental_memo(ttl=86400, show_spinner=False)
 def get_exoplanet_table_by_astroquery():
     table_name = 'pscomppars'
     columns = 'pl_name,hostname,sy_dist,pl_orbper,pl_bmasse,pl_rade,disc_year,discoverymethod'
@@ -70,3 +71,8 @@ st.sidebar.download_button(
     file_name='exoplanet_table.csv',
     mime='text/csv'
 )
+
+if st.sidebar.button('清除資料表快取'):
+    st.experimental_memo.clear()
+    st.balloons()
+    st.sidebar.success('已清除快取，請重新載入頁面')
