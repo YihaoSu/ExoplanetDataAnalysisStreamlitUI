@@ -1,5 +1,6 @@
 import streamlit as st
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
 
 @st.experimental_memo(ttl=86400, show_spinner=False)
@@ -32,7 +33,7 @@ def get_exoplanet_table_by_astroquery():
 page_title = '系外行星資料表篩選器'
 st.set_page_config(page_title=page_title, page_icon=':star', layout='wide')
 st.title(page_title)
-st.info('藉由[Astroquery](https://astroquery.readthedocs.io/en/latest/ipac/nexsci/nasa_exoplanet_archive.html)套件取得[NASA系外行星資料庫](https://exoplanetarchive.ipac.caltech.edu/)提供的資料表，篩選出所需資料後匯出CSV檔。')
+st.info('藉由[Astroquery](https://astroquery.readthedocs.io/en/latest/ipac/nexsci/nasa_exoplanet_archive.html)套件取得[NASA系外行星資料庫](https://exoplanetarchive.ipac.caltech.edu/)提供的資料表，篩選出所需資料後匯出CSV檔。點擊表格中的行星名稱連結，可到NASA的[Eyes on Exoplanets](https://exoplanets.nasa.gov/eyes-on-exoplanets)網站瞧瞧它們在藝術家的眼中長得如何。')
 
 with st.spinner('正在載入系外行星資料表，請稍候...'):
     exoplanet_table = get_exoplanet_table_by_astroquery()
@@ -62,9 +63,30 @@ selected_columns = st.sidebar.multiselect(
     '去除某幾個欄位值為空值的行星', column_name_lst
 )
 exoplanet_table = exoplanet_table.dropna(subset=selected_columns)
-
 exoplanet_table = exoplanet_table.reset_index(drop=True)
-st.dataframe(exoplanet_table)
+
+gb = GridOptionsBuilder.from_dataframe(exoplanet_table)
+gb.configure_column('行星名稱', pinned='left')
+gb.configure_column(
+    '行星名稱',
+    cellRenderer=JsCode('''
+    function(params) {
+        return '<a href="https://exoplanets.nasa.gov/eyes-on-exoplanets/#/planet/' + params.value.replaceAll(" ", "_") + '" target="_blank">' + params.value + '</a>'
+    };
+    ''')
+)
+for col in exoplanet_table.columns.values.tolist():
+    gb.configure_column(col, suppressMovable=True, suppressMenu=True)
+
+gridOptions = gb.build()
+AgGrid(
+    exoplanet_table,
+    gridOptions=gridOptions,
+    allow_unsafe_jscode=True,
+    height=400,
+    theme='balham'
+)
+
 st.sidebar.download_button(
     label='將篩選資料表匯出成CSV檔',
     data=exoplanet_table.to_csv(index=False),
