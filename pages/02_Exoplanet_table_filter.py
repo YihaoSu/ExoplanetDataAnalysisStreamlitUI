@@ -1,6 +1,7 @@
 import streamlit as st
 from astroquery.ipac.nexsci.nasa_exoplanet_archive import NasaExoplanetArchive
 from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
+import astropy.units as u
 
 
 @st.experimental_memo(ttl=86400, show_spinner=False)
@@ -15,7 +16,7 @@ def get_exoplanet_table_by_astroquery():
         columns={
             'pl_name': '行星名稱',
             'hostname': '所屬恆星名稱',
-            'sy_dist': '與地球的距離(單位：秒差距)',
+            'sy_dist': '與地球的距離',
             'pl_orbper': '行星軌道週期(單位：天)',
             'pl_bmasse': '行星質量(單位：地球質量)',
             'pl_rade': '行星半徑(單位：地球半徑)',
@@ -30,6 +31,32 @@ def get_exoplanet_table_by_astroquery():
     return exoplanet_table
 
 
+def get_distance_unit_dict():
+    parsec = 1 * u.parsec
+    parsec_to_lightyear = parsec.to(u.lyr)
+    parsec_to_au = parsec.to(u.au)
+    parsec_to_km = parsec.to(u.km)
+    distance_unit_dict = {
+        '秒差距': parsec,
+        '光年': parsec_to_lightyear,
+        '天文單位': parsec_to_au,
+        '公里': parsec_to_km
+    }
+
+    return distance_unit_dict
+
+def convert_exoplanet_table_distance_unit(
+    exoplanet_table, distance_unit_dict, distance_unit
+):
+    exoplanet_table['與地球的距離'] = exoplanet_table[
+        '與地球的距離'] * distance_unit_dict.get(distance_unit).value
+    exoplanet_table = exoplanet_table.rename(
+        columns={'與地球的距離': f'與地球的距離(單位：{distance_unit})'}
+    )
+
+    return exoplanet_table
+
+
 page_title = '系外行星資料表篩選器'
 st.set_page_config(page_title=page_title, page_icon=':star', layout='wide')
 st.title(page_title)
@@ -37,6 +64,20 @@ st.info('藉由[Astroquery](https://astroquery.readthedocs.io/en/latest/ipac/nex
 
 with st.spinner('正在載入系外行星資料表，請稍候...'):
     exoplanet_table = get_exoplanet_table_by_astroquery()
+
+distance_unit_dict = get_distance_unit_dict()
+distance_unit = st.radio(
+    '切換表格中的距離單位', list(distance_unit_dict.keys()), horizontal=True
+)
+exoplanet_table = convert_exoplanet_table_distance_unit(
+    exoplanet_table, distance_unit_dict, distance_unit
+)
+
+with st.expander('各距離單位的換算'):
+    st.markdown('[秒差距](https://zh.wikipedia.org/zh-tw/%E7%A7%92%E5%B7%AE%E8%B7%9D)、[光年](https://zh.wikipedia.org/zh-tw/%E5%85%89%E5%B9%B4)和[天文單位](https://zh.wikipedia.org/zh-tw/%E5%A4%A9%E6%96%87%E5%96%AE%E4%BD%8D)都是常用來描述星體距離的長度單位')
+    st.markdown('1秒差距約為 $3.09*10^{13}$ 公里')
+    st.markdown('1光年約為 $9.46*10^{12}$ 公里')
+    st.markdown('1天文單位是地球和太陽的平均距離，約為 $1.5*10^{8}$ 公里')
 
 year_min = int(exoplanet_table['發現年份'].min())
 year_max = int(exoplanet_table['發現年份'].max())
