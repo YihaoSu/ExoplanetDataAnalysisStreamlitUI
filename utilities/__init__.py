@@ -6,7 +6,7 @@ import astropy.units as u
 @st.experimental_memo(ttl=86400, show_spinner=False)
 def get_exoplanet_table_by_astroquery():
     table_name = 'pscomppars'
-    columns = 'pl_name,hostname,sy_dist,pl_orbper,pl_bmasse,pl_rade,disc_year,discoverymethod'
+    columns = 'pl_name,hostname,sy_dist,pl_orbper,pl_bmasse,pl_rade,disc_year,discoverymethod,disc_facility'
     exoplanet_table = NasaExoplanetArchive.query_criteria(
         table=table_name, select=columns
     )
@@ -20,7 +20,8 @@ def get_exoplanet_table_by_astroquery():
             'pl_bmasse': '行星質量(單位：地球質量)',
             'pl_rade': '行星半徑(單位：地球半徑)',
             'disc_year': '發現年份',
-            'discoverymethod': '發現方法'
+            'discoverymethod': '發現方法',
+            'disc_facility': '發現設施'
         }
     )
     exoplanet_table.sort_values(
