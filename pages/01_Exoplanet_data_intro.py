@@ -117,3 +117,16 @@ with st.expander('範例程式'):
 	if st.button('執行get_exoplanet_table_by_astroquery()並呈現系外行星資料表'):
 		exoplanet_table = get_exoplanet_table_by_astroquery()
 		st.dataframe(exoplanet_table)
+
+st.subheader('4.Lightkurve套件')
+st.info('[Lightkurve](https://docs.lightkurve.org/)能尋找並下載[Kepler太空望遠鏡(Kepler/K2)](https://zh.wikipedia.org/zh-tw/%E5%85%8B%E5%8D%9C%E5%8B%92%E5%A4%AA%E7%A9%BA%E6%9C%9B%E9%81%A0%E9%8F%A1)及[凌日系外行星巡天衛星(TESS)](https://zh.wikipedia.org/zh-tw/%E5%87%8C%E6%97%A5%E7%B3%BB%E5%A4%96%E8%A1%8C%E6%98%9F%E5%B7%A1%E5%A4%A9%E8%A1%9B%E6%98%9F)的觀測資料，且能將不同時段拍攝的影像資料轉換成[光變曲線](https://zh.wikipedia.org/zh-tw/%E5%85%89%E8%AE%8A%E6%9B%B2%E7%B7%9A)資料、計算光變週期，以[凌日法](https://zh.wikipedia.org/zh-tw/%E7%B3%BB%E5%A4%96%E8%A1%8C%E6%98%9F%E5%81%B5%E6%B8%AC%E6%B3%95#%E5%87%8C%E6%97%A5%E6%B3%95)尋找太陽系外行星。')
+lightkurve_example_code = '''
+%matplotlib notebook
+import lightkurve as lk
+
+search_result_table = lk.search_lightcurve('系外行星所屬恆星名稱', mission='Kepler、K2或TESS')
+lc = search_result_table[i].download() # i為search_result_table某一列的光變曲線資料
+lc.plot()
+'''
+with st.expander('範例程式'):
+	st.code(lightkurve_example_code, language='python')
