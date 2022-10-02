@@ -2,3 +2,4 @@ streamlit==1.13.0
 astroquery==0.4.6
 streamlit-aggrid==0.3.3
 plotly==5.10.0
+lightkurve==2.3.0
