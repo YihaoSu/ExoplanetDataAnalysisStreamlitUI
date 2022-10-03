@@ -61,7 +61,7 @@ if exoplanet_name:
                     st.subheader(f'Box Least Squares演算法求得power最大的週期為{orbital_period}天')
                     st.pyplot(periodogram.plot().figure)
                 
-                st.subheader(f'以{orbital_period}作為行星軌道週期所畫出的疊合光變曲線圖')
+                st.subheader(f'以{orbital_period}天作為行星軌道週期所畫出的疊合光變曲線圖')
                 st.pyplot(lc.fold(orbital_period).scatter(title='aa').figure)
 
     else:
