@@ -62,7 +62,7 @@ if exoplanet_name:
                     st.pyplot(periodogram.plot().figure)
                 
                 st.subheader(f'以{orbital_period}天作為行星軌道週期所畫出的疊合光變曲線圖')
-                st.pyplot(lc.fold(orbital_period).scatter(title='aa').figure)
+                st.pyplot(lc.fold(orbital_period).scatter().figure)
 
     else:
         st.error('查無資料')
