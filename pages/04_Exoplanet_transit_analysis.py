@@ -1,4 +1,3 @@
-from turtle import title
 import pandas as pd
 import streamlit as st
 import lightkurve as lk
