@@ -48,8 +48,18 @@ if exoplanet_name:
 
         if not selected_lc.empty:
             row_index = selected_lc['_selectedRowNodeInfo'].iloc[0].get('nodeRowIndex')
+            is_flatten = st.checkbox('是否濾除長週期趨勢？')
+            is_remove_outliers = st.checkbox('是否移除異常值？')
+
             with st.spinner('正在下載該筆光變曲線資料，請稍候...'):
                 lc = search_result_table[row_index].download()
+
+                if is_flatten:
+                    lc = lc.flatten()
+                
+                if is_remove_outliers:
+                    lc = lc.remove_outliers()
+
                 periodogram = lc.to_periodogram('bls')
                 orbital_period = periodogram.period_at_max_power.value
 
