@@ -60,12 +60,21 @@ exoplanet_table = exoplanet_table.reset_index(drop=True)
 gb = GridOptionsBuilder.from_dataframe(exoplanet_table)
 gb.configure_column('行星名稱', pinned='left')
 gb.configure_column(
-    '行星名稱',
-    cellRenderer=JsCode('''
-    function(params) {
-        return '<a href="https://exoplanets.nasa.gov/eyes-on-exoplanets/#/planet/' + params.value.replaceAll(" ", "_") + '" target="_blank">' + params.value + '</a>'
-    };
-    ''')
+    "行星名稱",
+    cellRenderer=JsCode("""
+        class UrlCellRenderer {
+          init(params) {
+            this.eGui = document.createElement('a');
+            this.eGui.innerText = params.value;
+            this.eGui.setAttribute('href', 'https://exoplanets.nasa.gov/eyes-on-exoplanets/#/planet/' + params.value.replaceAll(' ', '_'));
+            this.eGui.setAttribute('style', 'text-decoration:none');
+            this.eGui.setAttribute('target', '_blank');
+          }
+          getGui() {
+            return this.eGui;
+          }
+        }
+    """)
 )
 for col in exoplanet_table.columns.values.tolist():
     gb.configure_column(col, suppressMovable=True, suppressMenu=True)
